@@ -1,64 +1,60 @@
+import { locService } from './services/loc-service.js'
+import { mapService } from './services/map-service.js'
 
+window.onload = onInit;
+window.onAddMarker = onAddMarker;
+window.onPanTo = onPanTo;
+window.onGetLocs = onGetLocs;
+window.onGetUserPos = onGetUserPos;
 
+function onInit() {
+    onGetUserPos().then(pos=>{
+         mapService.initMap(pos.lat,pos.lng)
+        .then(() => {
+            console.log('Map is ready');
+        })
+        .catch(() => console.log('Error: cannot init map'));
+    })
+   
+}
+
+// This function provides a Promise API to the callback-based-api of getCurrentPosition
 function getPosition() {
-    if (!navigator.geolocation) {
-        alert("HTML5 Geolocation is not supported in your browser.");
-        return;
-    }
-    navigator.geolocation.getCurrentPosition(showLocation, handleLocationError);
-}
-function showLocation(position) {
-    var lat = position.coords.latitude
-    var lng = position.coords.longitude
-
-    // gMap.setCenter({ lat, lng })
-    // gMyLocationMarker.setMap(null)
-    // gMyLocationMarker=new google.maps.Marker({
-    //     position: { lat, lng },
-    //     map: gMap
-    // });
-    initMap(lat,lng) 
-
+    console.log('Getting Pos');
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject)
+    })
 }
 
-
-function handleLocationError(error) {
-    var locationError = document.getElementById("locationError");
-
-    switch (error.code) {
-        case 0:
-            locationError.innerHTML = "There was an error while retrieving your location: " + error.message;
-            break;
-        case 1:
-            locationError.innerHTML = "The user didn't allow this page to retrieve a location.";
-            break;
-        case 2:
-            locationError.innerHTML = "The browser was unable to determine your location: " + error.message;
-            break;
-        case 3:
-            locationError.innerHTML = "The browser timed out before retrieving the location.";
-            break;
-    }
+function onAddMarker() {
+    console.log('Adding a marker');
+    mapService.addMarker({ lat: 32.0749831, lng: 34.9120554 });
 }
-function initMap(lat,lng) {
 
-    var elMap = document.getElementById('map');
-    var options = {
-        center: { lat, lng },
-        zoom: 12
-    };
+function onGetLocs() {
+    locService.getLocs()
+        .then(locs => {
+            console.log('Locations:', locs)
+            document.querySelector('.locs').innerText = JSON.stringify(locs)
+        })
+}
 
-    gMap = new google.maps.Map(
-        elMap,
-        options
-    );
-    console.log('gMap:', gMap)
-    // renderMyPos(gMap)
-    new google.maps.Marker({
-        position: { lat, lng },
-        map: gMap,
-        title: 'my pos'
-    });
-    gMap.setCenter(new google.maps.LatLng(lat, lng));
-    // gMap.addListener('click', addPlace)
+function onGetUserPos() {
+    getPosition()
+        .then(pos => {
+            console.log('User position is:', pos.coords);
+           var pos={lat:pos.coords.latitude,lng:pos.coords.longitude};
+            document.querySelector('.user-pos').innerText =
+                `Latitude: ${pos.coords.latitude} - Longitude: ${pos.coords.longitude}`
+           return Promise.resolve(pos)
+           
+        })
+        .catch(err => {
+            console.log('err!!!', err);
+            return Promise.reject('err')
+        })
+}
+function onPanTo() {
+    console.log('Panning the Map');
+    mapService.panTo(35.6895, 139.6917);
 }
