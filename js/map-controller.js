@@ -12,6 +12,7 @@ window.onAddPlace = onAddPlace;
 window.onSelfLocate = onSelfLocate;
 window.onDeleteLoc = onDeleteLoc;
 window.onCopyLink = onCopyLink;
+window.onFilter = onFilter;
 
 function onInit() {
 
@@ -29,10 +30,6 @@ function onInit() {
             .catch(() => console.log('Error: cannot init map'));
     })
 
-    mapService.getCoords('600 Amphitheatre Parkway, Mountain View, CA 94043, USA')
-        .then(coords => {
-            console.log(coords);
-        }).catch(() => console.log('Error: cannot get coords'));
 }
 
 function onCopyLink() {
@@ -101,6 +98,18 @@ function getGitLocUrl() {
         console.log(`https://github.io/me/travelTip/index.html?lat=${pos.coords.latitude}&lng=${pos.coords.longitude}`);
 
     })
+}
+
+function onFilter(ev) {
+    if (ev) ev.preventDefault();
+    console.log('hu');
+    const elInputSearch = document.querySelector('input[name=search]');
+    mapService.getCoords(elInputSearch.value)
+        .then(coords => {
+            console.log(coords.lat + " " + coords.lng);
+            mapService.panTo(coords.lat, coords.lng);
+        }).catch(() => console.log('Error: cannot get coords'));
+    //    getCoords(address); 
 }
 
 

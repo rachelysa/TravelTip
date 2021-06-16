@@ -19,7 +19,11 @@
 
     </section>
     <nav>
-        <input type="search" class="search" placeholder="Enter an address.." onkeyup="onFilter(this.value)">
+        <!-- <input type="search" class="search" placeholder="Enter an address.." onkeyup="onFilter(this.value)"> -->
+        <form onsubmit="onFilter(event)">
+            <input type="text" name="search" placeholder="Enter an address...">
+        </form>
+
     </nav>
     <!-- The text field -->
     <input type="text" value="Hello World" id="myInput">
