@@ -11,8 +11,10 @@ window.onGetUserPos = onGetUserPos;
 window.onAddPlace = onAddPlace;
 window.onSelfLocate = onSelfLocate;
 window.onDeleteLoc = onDeleteLoc;
+window.onCopyLink = onCopyLink;
 
 function onInit() {
+
 
     onGetUserPos().then(pos => {
 
@@ -23,12 +25,35 @@ function onInit() {
 
                 });
                 console.log('Map is ready');
-
             })
             .catch(() => console.log('Error: cannot init map'));
     })
 
+    mapService.getCoords('600 Amphitheatre Parkway, Mountain View, CA 94043, USA')
+        .then(coords => {
+            console.log(coords);
+        }).catch(() => console.log('Error: cannot get coords'));
 }
+
+function onCopyLink() {
+    var url = getGitLocUrl();
+    console.log('url', url);
+    /* Get the text field */
+    var copyText = document.getElementById("myInput");
+
+    /* Select the text field */
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+
+    /* Alert the copied text */
+    alert("Copied the text: " + copyText.value);
+}
+
+
+
 
 // This function provides a Promise API to the callback-based-api of getCurrentPosition
 function getPosition() {
@@ -51,6 +76,8 @@ function onGetLocs() {
         })
 }
 
+
+
 function onGetUserPos() {
     return getPosition()
         .then(pos => {
@@ -65,6 +92,16 @@ function onGetUserPos() {
             return Promise.reject('err')
         })
 }
+
+function getGitLocUrl() {
+    // onGetUserPos().then(pos => {
+    // })
+    getPosition().then(pos => {
+        console.log(`https://github.io/me/travelTip/index.html?lat=${pos.coords.latitude}&lng=${pos.coords.longitude}`);
+
+    })
+}
+
 
 function onSelfLocate() {
     onGetUserPos().then(pos => {
@@ -86,6 +123,7 @@ function onAddPlace(event) {
 
     })
 }
+
 function onDeleteLoc(locId) {
     locService.deleteLoc(locId).then(locs => {
         console.log(locs);
@@ -96,7 +134,7 @@ function onDeleteLoc(locId) {
 
 function renderLocs(locs) {
     const strHtml = locs.map(loc => {
- 
+
         return `<div class="location">
         <div>${loc.name}</div>
        <div> <button onclick="onPanTo('${loc.lat}','${loc.lng}')">Go</button></div>

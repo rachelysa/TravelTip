@@ -1,3 +1,4 @@
+import { storageService } from './storage-service.js';
 import { utilsService } from './utils-service.js'
 
 // const API_KEY='AIzaSyDnTdjdUzBn6wydujWuOgw5AnxioVkVfac'
@@ -7,12 +8,14 @@ export const mapService = {
     addMarker,
     panTo,
     addPlace,
-    deleteMarker
+    deleteMarker,
+    getCoords
 }
 
 var gMap;
 var gMarkers = [];
 var gMyLocMarker
+
 function initMap(lat, lng) {
     console.log('InitMap');
     return _connectGoogleApi()
@@ -20,9 +23,9 @@ function initMap(lat, lng) {
             console.log('google available');
             gMap = new google.maps.Map(
                 document.querySelector('#map'), {
-                center: { lat, lng },
-                zoom: 15
-            });
+                    center: { lat, lng },
+                    zoom: 15
+                });
             gMyLocMarker = new google.maps.Marker({
                 position: { lat, lng },
                 map: gMap,
@@ -84,4 +87,16 @@ function _connectGoogleApi() {
         elGoogleApi.onload = resolve;
         elGoogleApi.onerror = () => reject('Google script failed to load')
     })
+}
+
+function getCoords(address) {
+    //const addressMap = storageService.loadFromStorage(KEY)
+    // if (addressMap[address]) return Promise.resolve(addressMap[adress]);
+    return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyDnTdjdUzBn6wydujWuOgw5AnxioVkVfac`)
+        // .then(res = res.data)
+        .then(res => {
+            return res;
+        })
+
+
 }
