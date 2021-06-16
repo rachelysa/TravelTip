@@ -42,7 +42,7 @@ function onGetLocs() {
 }
 
 function onGetUserPos() {
-  return  getPosition()
+    return getPosition()
         .then(pos => {
             console.log('User position is:', pos.coords);
             var position = { lat: pos.coords.latitude, lng: pos.coords.longitude };
@@ -56,7 +56,11 @@ function onGetUserPos() {
             return Promise.reject('err')
         })
 }
+
 function onPanTo() {
     console.log('Panning the Map');
-    mapService.panTo(35.6895, 139.6917);
+    // mapService.panTo(35.6895, 139.6917);
+    onGetUserPos().then(pos => {
+        mapService.panTo(pos.lat, pos.lng) // no need to have a promise here.
+    })
 }
