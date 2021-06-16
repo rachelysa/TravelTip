@@ -1,17 +1,24 @@
+
+import { storageService } from './storage-service.js'
+// import { storageService } from './services/storage-service'
 export const locService = {
-    getLocs
+    getLocs,
+    saveLoc
 }
 
 
-const locs = [
-    { name: 'Greatplace', lat: 32.047104, lng: 34.832384 }, 
-    { name: 'Neveragain', lat: 32.047201, lng: 34.832581 }
+var locs = [
+   
 ]
 
 function getLocs() {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve(locs);
-        }, 2000)
-    });
+    locs= storageService.loadFromStorage('myLocs')||[];
+    return Promise.resolve(locs);
+}
+function saveLoc(loc){
+    locs.push(loc)
+
+         storageService.saveToStorage('myLocs', locs);
+         return Promise.resolve(locs);
+
 }

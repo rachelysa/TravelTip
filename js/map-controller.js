@@ -1,19 +1,26 @@
 import { locService } from './services/loc-service.js'
 import { mapService } from './services/map-service.js'
 
+
+
 window.onload = onInit;
 window.onAddMarker = onAddMarker;
 window.onPanTo = onPanTo;
 window.onGetLocs = onGetLocs;
 window.onGetUserPos = onGetUserPos;
-
+window.onAddPlace = onAddPlace;
+window.onSelfLocate = onSelfLocate;
 
 
 function onInit() {
+    locService.getLocs().then(locs => {
+        renderLocs(locs)
+    });
     onGetUserPos().then(pos => {
         mapService.initMap(pos.lat, pos.lng)
             .then(() => {
                 console.log('Map is ready');
+
             })
             .catch(() => console.log('Error: cannot init map'));
     })
@@ -57,10 +64,35 @@ function onGetUserPos() {
         })
 }
 
+function onSelfLocate() {
+    onGetUserPos().then(pos => {
+        mapService.panTo(pos.lat, pos.lng)
+    })
+};
+
 function onPanTo() {
     console.log('Panning the Map');
-    // mapService.panTo(35.6895, 139.6917);
-    onGetUserPos().then(pos => {
-        mapService.panTo(pos.lat, pos.lng) // no need to have a promise here.
+    mapService.panTo(35.6895, 139.6917);
+}
+
+function onAddPlace(event) {
+    mapService.addPlace(event).then(loc => {
+        locService.saveLoc(loc).then(locs => {
+            renderLocs(locs)
+        })
+
     })
+}
+
+function renderLocs(locs) {
+    const strHtml = locs.map(loc => {
+        console.log(loc);
+        return `<div class="location">
+        <div>${loc.name}</div>
+        <button>Go</button>
+        <button>Delete</button>
+        </div>`
+    }).join('');
+    var elLoc = document.querySelector('.locations')
+    elLoc.innerHTML = strHtml;
 }

@@ -1,11 +1,12 @@
-
+import { utilsService } from './utils-service.js'
 
 // const API_KEY='AIzaSyDnTdjdUzBn6wydujWuOgw5AnxioVkVfac'
 
 export const mapService = {
     initMap,
     addMarker,
-    panTo
+    panTo,
+    addPlace
 }
 
 var gMap;
@@ -17,35 +18,34 @@ function initMap(lat, lng) {
             console.log('google available');
             gMap = new google.maps.Map(
                 document.querySelector('#map'), {
-                center: { lat, lng },
-                zoom: 15
-            });
+                    center: { lat, lng },
+                    zoom: 15
+                });
             var marker = new google.maps.Marker({
-                position: {lat,lng},
+                position: { lat, lng },
                 map: gMap,
                 title: 'Hello World!'
             });
 
-            gMap.addListener('click', addPlace)
+            gMap.addListener('click', onAddPlace)
         })
-       
+
 }
+
 function addPlace(event) {
     console.log('event:', event)
-   var mapZoom = gMap.zoom;
-   var startLocation = event.latLng;
-   
-    var posName = prompt(' enter location name')
+    var mapZoom = gMap.zoom;
+    var startLocation = event.latLng;
+
+    var locName = prompt(' enter location name')
     var marker = new google.maps.Marker({
         position: { lat: startLocation.lat(), lng: startLocation.lng() },
         map: gMap,
-        title: posName
+        title: locName
     });
-    const pos={ id: gNextId++, lat: startLocation.lat(), lng: startLocation.lng(), name: posName }
-    // gPoss.push({ id: gNextId++, lat: startLocation.lat(), lng: startLocation.lng(), name: posName });
-    // saveToStorage('myPos', gPoss)
-    // renderMyPos(gMap)
-    // setTimeout(placeMarker, 600);
+    const pos = { id: utilsService._makeId(), lat: startLocation.lat(), lng: startLocation.lng(), name: locName };
+    return Promise.resolve(pos)
+
 }
 
 function addMarker(loc) {
