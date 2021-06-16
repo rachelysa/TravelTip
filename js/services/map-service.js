@@ -34,13 +34,14 @@ function addPlace(event) {
     console.log('event:', event)
    var mapZoom = gMap.zoom;
    var startLocation = event.latLng;
-    // map.setCenter(new google.maps.LatLng( startLocation.lat(), startLocation.lng()));
+   
     var posName = prompt(' enter location name')
     var marker = new google.maps.Marker({
         position: { lat: startLocation.lat(), lng: startLocation.lng() },
         map: gMap,
         title: posName
     });
+    const pos={ id: gNextId++, lat: startLocation.lat(), lng: startLocation.lng(), name: posName }
     // gPoss.push({ id: gNextId++, lat: startLocation.lat(), lng: startLocation.lng(), name: posName });
     // saveToStorage('myPos', gPoss)
     // renderMyPos(gMap)
