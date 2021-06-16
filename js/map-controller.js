@@ -13,10 +13,26 @@ window.onSelfLocate = onSelfLocate;
 window.onDeleteLoc = onDeleteLoc;
 window.onCopyLink = onCopyLink;
 
-function onInit() {
+function onInit(ev) {
+
+    var url = new URL(ev.target.URL.toString());
+    var lat = url.searchParams.get('lat');
+    var lng = url.searchParams.get('lng');
+    if (lng && lat) {
+        mapService.initMap(parseInt(lat), parseInt(lng))
+            .then(() => {
+                locService.getLocs().then(locs => {
+                    renderLocs(locs);
+
+                });
+                console.log('Map is ready');
 
 
-    onGetUserPos().then(pos => {
+            })
+            .catch(() => console.log('Error: cannot init map'));
+    }
+
+    else onGetUserPos().then(pos => {
 
         mapService.initMap(pos.lat, pos.lng)
             .then(() => {
@@ -36,20 +52,18 @@ function onInit() {
 }
 
 function onCopyLink() {
-    var url = getGitLocUrl();
-    console.log('url', url);
-    /* Get the text field */
-    var copyText = document.getElementById("myInput");
+    getGitLocUrl().then(url => {
+        console.log(url);
+        var copyText = document.getElementById("myInput");
+        copyText.value = url;
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        document.execCommand('copy');
 
-    /* Select the text field */
-    copyText.select();
-    copyText.setSelectionRange(0, 99999); /* For mobile devices */
+    });
 
-    /* Copy the text inside the text field */
-    document.execCommand("copy");
 
-    /* Alert the copied text */
-    alert("Copied the text: " + copyText.value);
+
 }
 
 
@@ -83,7 +97,7 @@ function onGetUserPos() {
         .then(pos => {
             console.log('User position is:', pos.coords);
             var position = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-          
+           
             return Promise.resolve(position)
 
         })
@@ -96,8 +110,8 @@ function onGetUserPos() {
 function getGitLocUrl() {
     // onGetUserPos().then(pos => {
     // })
-    getPosition().then(pos => {
-        console.log(`https://github.io/me/travelTip/index.html?lat=${pos.coords.latitude}&lng=${pos.coords.longitude}`);
+    return getPosition().then(pos => {
+        return `https://github.io/me/travelTip/index.html?lat=${pos.coords.latitude}&lng=${pos.coords.longitude}`;
 
     })
 }
@@ -105,6 +119,7 @@ function getGitLocUrl() {
 
 function onSelfLocate() {
     onGetUserPos().then(pos => {
+        mapService.addMarker(pos, 'home')
         mapService.panTo(pos.lat, pos.lng)
     })
 };
@@ -127,7 +142,7 @@ function onAddPlace(event) {
 function onDeleteLoc(locId) {
     locService.deleteLoc(locId).then(locs => {
         console.log(locs);
-       mapService.deleteMarker()
+        mapService.deleteMarker()
         renderLocs(locs)
     })
 }
@@ -137,8 +152,8 @@ function renderLocs(locs) {
 
         return `<div class="location">
         <div>${loc.name}</div>
-       <div> <button onclick="onPanTo('${loc.lat}','${loc.lng}')">Go</button></div>
-       <div> <button onclick="onDeleteLoc('${loc.id}')">Delete</button></div>
+       <div> <button onclick="onPanTo('${loc.lat}','${loc.lng}')" class="btn">Go</button></div>
+       <div> <button onclick="onDeleteLoc('${loc.id}')" class="btn">Delete</button></div>
         </div>`
     }).join('');
     var elLoc = document.querySelector('.locations')

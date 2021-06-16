@@ -1,10 +1,55 @@
 
-
-
+body{
+    color: #1255c1;
+}
+.btn{
+    height: 40px;
+    width: 100px;
+    border-radius: 10px;
+    background-color:white;
+    border: 1px solid #d71b1b;
+    color: #1255c1;
+    margin: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.5s;
+}
+.btn:hover{
+    box-shadow: 0 0 7px #d71b1b;
+}
 .location{
+    padding: 5px;
     display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: #d71b1b 1px solid;
     
 }
-.location *{
-    width: 100px;
+h1{
+    text-align: center;
+}
+.location div{
+    width: 120px;
+    text-align: center;
+}
+.logo{
+   height: 130px; 
+   margin-inline-start: 20px;
+
+}
+.hidden{
+    opacity: 0;
+    position: absolute;
+}
+.logo-container{
+    margin-bottom: 20px;
+    border-bottom: 1px solid #d71b1b;
+    width: 100vw;
+}
+.map-actions{
+    /* margin: 0 auto 20px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
 }

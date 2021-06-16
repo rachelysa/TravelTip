@@ -32,7 +32,7 @@ function initMap(lat, lng) {
                 title: 'home'
             });
 
-
+            gMap.setCenter(new google.maps.LatLng(lat, lng));
             gMap.addListener('click', onAddPlace)
         })
 
