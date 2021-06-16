@@ -24,7 +24,7 @@ function saveLoc(loc){
 
 }
 function deleteLoc(locId){
-    var deleteIdx = locs.findIndex(function (loc) {
+    var deleteIdx = locs.findIndex(loc=> {
         return (loc.id === locId)
     })
 

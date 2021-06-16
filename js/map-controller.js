@@ -56,8 +56,7 @@ function onGetUserPos() {
         .then(pos => {
             console.log('User position is:', pos.coords);
             var position = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-            document.querySelector('.user-pos').innerText =
-                `Latitude: ${pos.coords.latitude} - Longitude: ${pos.coords.longitude}`
+          
             return Promise.resolve(position)
 
         })
@@ -89,7 +88,8 @@ function onAddPlace(event) {
 }
 function onDeleteLoc(locId) {
     locService.deleteLoc(locId).then(locs => {
-        mapService.deleteMarker()
+        console.log(locs);
+       mapService.deleteMarker()
         renderLocs(locs)
     })
 }
