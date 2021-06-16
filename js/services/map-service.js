@@ -93,10 +93,8 @@ function getCoords(address) {
     //const addressMap = storageService.loadFromStorage(KEY)
     // if (addressMap[address]) return Promise.resolve(addressMap[adress]);
     return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyDnTdjdUzBn6wydujWuOgw5AnxioVkVfac`)
-        // .then(res = res.data)
-        .then(res => {
-            return res;
-        })
 
-
+    .then(res => {
+        return res.data.results[0].geometry.location;
+    })
 }
