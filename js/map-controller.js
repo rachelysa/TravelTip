@@ -1,6 +1,6 @@
 import { locService } from './services/loc-service.js'
 import { mapService } from './services/map-service.js'
-
+import { weatherService } from './services/weather-service.js'
 
 
 window.onload = onInit;
@@ -19,8 +19,13 @@ function onInit(ev) {
     var url = new URL(ev.target.URL.toString());
     var lat = url.searchParams.get('lat');
     var lng = url.searchParams.get('lng');
+    
     if (lng && lat) {
-        mapService.initMap(parseInt(lat), parseInt(lng))
+        weatherService.getWeather(lat,lng).then(weather=>{
+            console.log(weather);
+            renderWeather(weather)
+        })
+        mapService.initMap( parseFloat(lat),  parseFloat(lng))
             .then(() => {
                 locService.getLocs().then(locs => {
                     renderLocs(locs);
@@ -34,7 +39,10 @@ function onInit(ev) {
     }
 
     else onGetUserPos().then(pos => {
-
+        weatherService.getWeather(pos.lat, pos.lng).then(weather=>{
+            console.log(weather);
+            renderWeather(weather)
+        })
         mapService.initMap(pos.lat, pos.lng)
             .then(() => {
                 locService.getLocs().then(locs => {
@@ -108,7 +116,7 @@ function getGitLocUrl() {
     // onGetUserPos().then(pos => {
     // })
     return getPosition().then(pos => {
-        return `https://github.io/me/travelTip/index.html?lat=${pos.coords.latitude}&lng=${pos.coords.longitude}`;
+        return `https://rachelysa.github.io/TravelTip/index.html?lat=${pos.coords.latitude}&lng=${pos.coords.longitude}`;
 
     })
 }
@@ -121,7 +129,17 @@ function onFilter(ev) {
         .then(coords => {
             console.log(coords.lat + " " + coords.lng);
             mapService.panTo(coords.lat, coords.lng);
-            mapService.addMarker({lat:coords.lat,lng:coords.lng},'fff')
+            weatherService.getWeather(coords.lat,coords.lng).then(weather=>{
+                console.log(weather);
+                renderWeather(weather)
+            })
+            var name=prompt('enter location name')
+            mapService.addMarker({lat:coords.lat,lng:coords.lng},name);
+            mapService. createLoc(coords.lat, coords.lng,name).then(loc=>{
+                locService.saveLoc(loc).then(locs => {
+                    renderLocs(locs)
+                })
+            })
         }).catch(() => console.log('Error: cannot get coords'));
     //    getCoords(address); 
 }
@@ -135,6 +153,10 @@ function onSelfLocate() {
 };
 
 function onPanTo(lat, lng) {
+    weatherService.getWeather(lat, lng).then(weather=>{
+        console.log(weather);
+        renderWeather(weather)
+    })
     console.log('Panning the Map');
     mapService.panTo(lat, lng);
 
@@ -175,4 +197,14 @@ function renderMarkers(locs) {
     locs.forEach(loc => {
         mapService.addMarker({ lat: loc.lat, lng: loc.lng }, loc.name)
     })
+}
+function renderWeather(weather){
+    const strHtml=`<div>
+   
+    <h2>city: ${weather.city}</h2>
+    <h3>temp: ${weather.tmp}</h3>
+    <h4>description: ${weather.desc}</h4>
+    </div>`;
+    var elWeather=document.querySelector('.weather');
+    elWeather.innerHTML=strHtml
 }

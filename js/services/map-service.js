@@ -9,7 +9,8 @@ export const mapService = {
     panTo,
     addPlace,
     deleteMarker,
-    getCoords
+    getCoords,
+    createLoc
 }
 
 var gMap;
@@ -49,6 +50,10 @@ function addPlace(event) {
     const loc = { id: utilsService._makeId(), lat: startLocation.lat(), lng: startLocation.lng(), name: locName };
     return Promise.resolve(loc)
 
+}
+function createLoc(lat,lng,locName){
+    const loc = { id: utilsService._makeId(), lat, lng, name: locName };
+    return Promise.resolve(loc)
 }
 function deleteMarker() {
     gMarkers.forEach(marker => {

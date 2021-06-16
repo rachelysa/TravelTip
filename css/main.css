@@ -1,6 +1,8 @@
 
 body{
     color: #1255c1;
+    
+    margin: 10px 40px;
 }
 .btn{
     height: 40px;
@@ -25,6 +27,9 @@ body{
     border-bottom: #d71b1b 1px solid;
     
 }
+.locations{
+    flex-basis: 50%;
+}
 h1{
     text-align: center;
 }
@@ -32,6 +37,27 @@ h1{
     width: 120px;
     text-align: center;
 }
+.search{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  margin-bottom: 10px;
+  padding: 5px;
+
+}
+.search input{
+    height: 15px;
+    width: 300px;
+    border-radius: 10px;
+    border: 1px solid #d71b1b;
+    padding: 10px;
+    color: #1255c1;
+}
+.search input:focus { 
+    outline: none;
+    /* border-color: coral; */
+    box-shadow: 0 0 10px #d71b1b;
+  }
 .logo{
    height: 130px; 
    margin-inline-start: 20px;
@@ -42,14 +68,34 @@ h1{
     position: absolute;
 }
 .logo-container{
-    margin-bottom: 20px;
+
+    margin-bottom: 10px;
     border-bottom: 1px solid #d71b1b;
-    width: 100vw;
+    width: 100%;
 }
 .map-actions{
     /* margin: 0 auto 20px; */
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+}
+.loc-weather{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap:15px
+}
+.weather{
+    flex-basis: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+   
+}
+.weather div{
+    padding: 30px;
+    border: 1px solid #d71b1b;
+    border-radius: 20px;
 }
