@@ -1,3 +1,4 @@
+import { storageService } from './storage-service.js';
 import { utilsService } from './utils-service.js'
 
 // const API_KEY='AIzaSyDnTdjdUzBn6wydujWuOgw5AnxioVkVfac'
@@ -10,6 +11,13 @@ export const mapService = {
 }
 
 var gMap;
+
+function initGeoCode(address) {
+    return _connectGeocodeApi()
+    then(() => {
+        console.log()
+    })
+}
 
 function initMap(lat, lng) {
     console.log('InitMap');
@@ -77,3 +85,26 @@ function _connectGoogleApi() {
         elGoogleApi.onerror = () => reject('Google script failed to load')
     })
 }
+
+function getCoords(address) {
+    //  const addressMap = storageService.loadFromStorage(KEY)
+    //   if (addressMap[address]) return Promise.resolve(addressMap[adress]);
+    return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyDnTdjdUzBn6wydujWuOgw5AnxioVkVfac`)
+        .then(res = res.data)
+
+
+}
+
+// function _connectGeocodeApi() {
+//     if (window.google) return Promise.resolve()
+
+//     var elGeocodeApi = document.createElement('script');
+//     elGeocodeApi.src = 'https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyDnTdjdUzBn6wydujWuOgw5AnxioVkVfac';
+//     elGeocodeApi.async = true;
+//     document.body.append(elGeocodeApi);
+
+//     return new Promise((resolve, reject) => {
+//         elGeocodeApi.onload = resolve;
+//         elGeocodeApi.onerror = () => reject('Google script failed to load')
+//     })
+// }
