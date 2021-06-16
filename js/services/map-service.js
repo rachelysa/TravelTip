@@ -7,7 +7,9 @@ export const mapService = {
     initMap,
     addMarker,
     panTo,
-    addPlace
+    addPlace,
+    deleteMarker,
+    getCoords
 }
 
 var gMap;
@@ -19,6 +21,9 @@ function initGeoCode(address) {
     })
 }
 
+var gMarkers = [];
+var gMyLocMarker
+
 function initMap(lat, lng) {
     console.log('InitMap');
     return _connectGoogleApi()
@@ -29,11 +34,12 @@ function initMap(lat, lng) {
                     center: { lat, lng },
                     zoom: 15
                 });
-            var marker = new google.maps.Marker({
+            gMyLocMarker = new google.maps.Marker({
                 position: { lat, lng },
                 map: gMap,
-                title: 'Hello World!'
+                title: 'home'
             });
+
 
             gMap.addListener('click', onAddPlace)
         })
@@ -41,7 +47,7 @@ function initMap(lat, lng) {
 }
 
 function addPlace(event) {
-    console.log('event:', event)
+
     var mapZoom = gMap.zoom;
     var startLocation = event.latLng;
 
@@ -51,18 +57,27 @@ function addPlace(event) {
         map: gMap,
         title: locName
     });
-    const pos = { id: utilsService._makeId(), lat: startLocation.lat(), lng: startLocation.lng(), name: locName };
-    return Promise.resolve(pos)
+    const loc = { id: utilsService._makeId(), lat: startLocation.lat(), lng: startLocation.lng(), name: locName };
+    return Promise.resolve(loc)
 
 }
 
-function addMarker(loc) {
+function deleteMarker() {
+    gMarkers.forEach(marker => {
+        marker.setMap(null);
+
+    })
+    gMarkers = new Array();
+    addMarker(gMyLocMarker, 'home');
+}
+
+function addMarker(loc, title) {
     var marker = new google.maps.Marker({
         position: loc,
         map: gMap,
-        title: 'Hello World!'
+        title
     });
-    return marker;
+    gMarkers.push(marker);
 }
 
 function panTo(lat, lng) {
@@ -87,24 +102,13 @@ function _connectGoogleApi() {
 }
 
 function getCoords(address) {
-    //  const addressMap = storageService.loadFromStorage(KEY)
-    //   if (addressMap[address]) return Promise.resolve(addressMap[adress]);
+    //const addressMap = storageService.loadFromStorage(KEY)
+    // if (addressMap[address]) return Promise.resolve(addressMap[adress]);
     return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyDnTdjdUzBn6wydujWuOgw5AnxioVkVfac`)
-        .then(res = res.data)
+        // .then(res = res.data)
+        .then(res => {
+            return res;
+        })
 
 
 }
-
-// function _connectGeocodeApi() {
-//     if (window.google) return Promise.resolve()
-
-//     var elGeocodeApi = document.createElement('script');
-//     elGeocodeApi.src = 'https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyDnTdjdUzBn6wydujWuOgw5AnxioVkVfac';
-//     elGeocodeApi.async = true;
-//     document.body.append(elGeocodeApi);
-
-//     return new Promise((resolve, reject) => {
-//         elGeocodeApi.onload = resolve;
-//         elGeocodeApi.onerror = () => reject('Google script failed to load')
-//     })
-// }
