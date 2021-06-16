@@ -6,11 +6,13 @@ export const mapService = {
     initMap,
     addMarker,
     panTo,
-    addPlace
+    addPlace,
+    deleteMarker
 }
 
 var gMap;
-
+var gMarkers=[];
+var gMyLocMarker
 function initMap(lat, lng) {
     console.log('InitMap');
     return _connectGoogleApi()
@@ -21,19 +23,20 @@ function initMap(lat, lng) {
                     center: { lat, lng },
                     zoom: 15
                 });
-            var marker = new google.maps.Marker({
+                gMyLocMarker = new google.maps.Marker({
                 position: { lat, lng },
                 map: gMap,
-                title: 'Hello World!'
+                title: 'home'
             });
-
+            
+           
             gMap.addListener('click', onAddPlace)
         })
 
 }
 
 function addPlace(event) {
-    console.log('event:', event)
+
     var mapZoom = gMap.zoom;
     var startLocation = event.latLng;
 
@@ -43,18 +46,25 @@ function addPlace(event) {
         map: gMap,
         title: locName
     });
-    const pos = { id: utilsService._makeId(), lat: startLocation.lat(), lng: startLocation.lng(), name: locName };
-    return Promise.resolve(pos)
+    const loc = { id: utilsService._makeId(), lat: startLocation.lat(), lng: startLocation.lng(), name: locName };
+    return Promise.resolve(loc)
 
 }
+function deleteMarker(){
+    gMarkers.forEach(marker=>{
+        marker.setMap(null);
 
-function addMarker(loc) {
+    })
+    gMarkers = new Array();
+    addMarker(gMyLocMarker,'home');
+}
+function addMarker(loc,title) {
     var marker = new google.maps.Marker({
         position: loc,
         map: gMap,
-        title: 'Hello World!'
+        title
     });
-    return marker;
+    gMarkers.push(marker) ;
 }
 
 function panTo(lat, lng) {

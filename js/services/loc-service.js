@@ -3,7 +3,8 @@ import { storageService } from './storage-service.js'
 // import { storageService } from './services/storage-service'
 export const locService = {
     getLocs,
-    saveLoc
+    saveLoc,
+    deleteLoc
 }
 
 
@@ -21,4 +22,13 @@ function saveLoc(loc){
          storageService.saveToStorage('myLocs', locs);
          return Promise.resolve(locs);
 
+}
+function deleteLoc(locId){
+    var deleteIdx = locs.findIndex(function (loc) {
+        return (loc.id === locId)
+    })
+
+    locs.splice(deleteIdx, 1);
+    storageService.saveToStorage('myLocs', locs);
+    return Promise.resolve(locs);
 }

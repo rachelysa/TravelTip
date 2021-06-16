@@ -1,0 +1,10 @@
+
+
+
+.location{
+    display: flex;
+    
+}
+.location *{
+    width: 100px;
+}

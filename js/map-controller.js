@@ -10,15 +10,18 @@ window.onGetLocs = onGetLocs;
 window.onGetUserPos = onGetUserPos;
 window.onAddPlace = onAddPlace;
 window.onSelfLocate = onSelfLocate;
-
+window.onDeleteLoc = onDeleteLoc;
 
 function onInit() {
-    locService.getLocs().then(locs => {
-        renderLocs(locs)
-    });
+
     onGetUserPos().then(pos => {
+
         mapService.initMap(pos.lat, pos.lng)
             .then(() => {
+                locService.getLocs().then(locs => {
+                    renderLocs(locs);
+
+                });
                 console.log('Map is ready');
 
             })
@@ -70,9 +73,10 @@ function onSelfLocate() {
     })
 };
 
-function onPanTo() {
+function onPanTo(lat, lng) {
     console.log('Panning the Map');
-    mapService.panTo(35.6895, 139.6917);
+    mapService.panTo(lat, lng);
+
 }
 
 function onAddPlace(event) {
@@ -83,16 +87,29 @@ function onAddPlace(event) {
 
     })
 }
+function onDeleteLoc(locId) {
+    locService.deleteLoc(locId).then(locs => {
+        mapService.deleteMarker()
+        renderLocs(locs)
+    })
+}
 
 function renderLocs(locs) {
     const strHtml = locs.map(loc => {
-        console.log(loc);
+ 
         return `<div class="location">
         <div>${loc.name}</div>
-        <button>Go</button>
-        <button>Delete</button>
+       <div> <button onclick="onPanTo('${loc.lat}','${loc.lng}')">Go</button></div>
+       <div> <button onclick="onDeleteLoc('${loc.id}')">Delete</button></div>
         </div>`
     }).join('');
     var elLoc = document.querySelector('.locations')
     elLoc.innerHTML = strHtml;
+    renderMarkers(locs)
+}
+
+function renderMarkers(locs) {
+    locs.forEach(loc => {
+        mapService.addMarker({ lat: loc.lat, lng: loc.lng }, loc.name)
+    })
 }
