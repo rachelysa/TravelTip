@@ -1,6 +1,6 @@
 
 
-
+// const API_KEY='AIzaSyDnTdjdUzBn6wydujWuOgw5AnxioVkVfac'
 
 export const mapService = {
     initMap,
@@ -9,8 +9,8 @@ export const mapService = {
 }
 
 var gMap;
-const API_KEY='AIzaSyDnTdjdUzBn6wydujWuOgw5AnxioVkVfac'
-function initMap(lat = 32.0749831, lng = 34.9120554) {
+
+function initMap(lat, lng) {
     console.log('InitMap');
     return _connectGoogleApi()
         .then(() => {
@@ -19,9 +19,32 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
                 document.querySelector('#map'), {
                 center: { lat, lng },
                 zoom: 15
-            })
-            console.log('Map!', gMap);
+            });
+            var marker = new google.maps.Marker({
+                position: {lat,lng},
+                map: gMap,
+                title: 'Hello World!'
+            });
+
+            gMap.addListener('click', addPlace)
         })
+       
+}
+function addPlace(event) {
+    console.log('event:', event)
+   var mapZoom = gMap.zoom;
+   var startLocation = event.latLng;
+    // map.setCenter(new google.maps.LatLng( startLocation.lat(), startLocation.lng()));
+    var posName = prompt(' enter location name')
+    var marker = new google.maps.Marker({
+        position: { lat: startLocation.lat(), lng: startLocation.lng() },
+        map: gMap,
+        title: posName
+    });
+    // gPoss.push({ id: gNextId++, lat: startLocation.lat(), lng: startLocation.lng(), name: posName });
+    // saveToStorage('myPos', gPoss)
+    // renderMyPos(gMap)
+    // setTimeout(placeMarker, 600);
 }
 
 function addMarker(loc) {
@@ -42,7 +65,7 @@ function panTo(lat, lng) {
 
 function _connectGoogleApi() {
     if (window.google) return Promise.resolve()
-    const API_KEY = ''; //TODO: Enter your API Key
+
     var elGoogleApi = document.createElement('script');
     elGoogleApi.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDnTdjdUzBn6wydujWuOgw5AnxioVkVfac`;
     elGoogleApi.async = true;
