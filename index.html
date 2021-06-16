@@ -7,10 +7,14 @@
     <title>TravelTip</title>
     <link rel="stylesheet" href="css/main.css">
 </head>
-<body>
-    
+<body onload="getPosition()">
+    <div id="map" style="width:100%;height:500px;margin-bottom: 5px;"></div>
 
     <script src="js/map-controller.js"></script>
     <script src="js/services/map-service.js"></script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnTdjdUzBn6wydujWuOgw5AnxioVkVfac&callback=initMap">
+    </script>
+
 </body>
 </html>
